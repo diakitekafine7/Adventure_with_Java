@@ -1,3 +1,3 @@
-public class ChapeauDePaille{
+public class ChapeauDePaille extends Pirate {
     
 }
