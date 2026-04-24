@@ -9,7 +9,7 @@ public abstract class EquipagePirate extends Agent implements Combattant{
     public void recolter() {
         Ressource r = t.getCase(lig, col);
         if (r != null) {
-            System.out.prxintln(nom + " récolte " + r.toString());
+            System.out.println(nom + " récolte " + r.toString());
             t.viderCase(lig, col); // Action sur le terrain
         }
     }
