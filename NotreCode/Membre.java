@@ -1,6 +1,9 @@
-public class Luffy extends Pirate {
-    public Luffy(int lig, int col, Terrain t) {
-        super("Luffy", lig, col, t, 3000000);
+public class Membre extends Pirate {
+    private int prime;
+
+    public Membre(String nom, int lig, int col, Terrain t, int prime) {
+        super(nom, lig, col, t);
+        this.prime = prime;
     }
 
     public void action() {
