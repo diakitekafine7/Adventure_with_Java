@@ -1,7 +1,7 @@
 public class MarineN55 extends Marine {
 
-    public MarineN55(String nom, int lig, int col, Terrain t) {
-        super(nom, "Soldat du G-5", lig, col, t);
+    public MarineN55(int lig, int col, Terrain t) {
+        super("MarineN55", "Soldat du G-5", lig, col, t);
     }
 
     public void action() {

@@ -1,4 +1,4 @@
-public abstract class Marine extends Agent {
+public abstract class Marine extends Agent implements Combattant{
     protected String grade;
     protected String nom;
 
@@ -7,6 +7,8 @@ public abstract class Marine extends Agent {
         this.nom = nom;
         this.grade = grade;
     }
-
-    // On peut ajouter une méthode pour capturer un pirate apres
+    
+    public void crierVictoire(){ 
+        System.out.println(nom + ": La Justice a triomphé !"); 
+    }
 }

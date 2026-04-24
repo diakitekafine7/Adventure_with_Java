@@ -1,4 +1,4 @@
-public abstract class Pirate extends Agent{
+public abstract class Pirate extends Agent implements Combattant{
     protected String nom;
 
     public Pirate(String nom, int lig, int col, Terrain t) {
@@ -9,8 +9,11 @@ public abstract class Pirate extends Agent{
     public void recolter() {
         Ressource r = t.getCase(lig, col);
         if (r != null) {
-            System.out.println(nom + " récolte " + r.toString());
+            System.out.prxintln(nom + " récolte " + r.toString());
             t.viderCase(lig, col); // Action sur le terrain
         }
+    }
+    public void crierVictoire() { 
+        System.out.println(nom + " : Le One Piece sera à nous !"); 
     }
 }
