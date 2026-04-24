@@ -1,7 +1,7 @@
-public abstract class Pirate extends Agent implements Combattant{
+public abstract class EquipagePirate extends Agent implements Combattant{
     protected String nom;
 
-    public Pirate(String nom, int lig, int col, Terrain t) {
+    public EquipagePirate(String nom, int lig, int col, Terrain t) {
         super(lig, col, t);
         this.nom = nom;
     }
