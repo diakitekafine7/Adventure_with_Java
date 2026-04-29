@@ -3,18 +3,26 @@ public class ChapeauxDePaille extends EquipagePirate{
         super("ChapeauxDePaille", lig, col, t);
     }
 
-    // Dans ChapeauxDePaille
     public void action() {
-        // Déplacement vers une case aléatoire
-        int nouvelleLig = (int)(Math.random() * t.nbLignes) + 1;
-        int nouvelleCol = (int)(Math.random() * t.nbColonnes) + 1;
-        this.seDeplacer(nouvelleLig, nouvelleCol);
-        System.out.println(nom + " navigue vers (" + nouvelleLig + "," + nouvelleCol + ")");
+        // Calcul déplacement
+        int deltaLig = (int)(Math.random() * 3) - 1; 
+        int deltaCol = (int)(Math.random() * 3) - 1;
     
-        // Puis il récolte ce qu'il y a sur la case
+        // Calcul des nouvelles coordonnées à partir de la position actuelle
+        int nL = this.getLigne() + deltaLig;
+        int nC = this.getColonne() + deltaCol;
+    
+        // Vérification des limites du terrain (typiquement 1 à 5)
+        if (nL >= 1 && nL <= 5 && nC >= 1 && nC <= 5) {
+            this.seDeplacer(nL, nC);
+            
+            // Utilisation des getters pour éviter les erreurs de visibilité
+            System.out.println(nom + " navigue vers (" + nL + "," + nC + ")");
+        }
+    
+        // 4. Puis il récolte ce qu'il y a sur la case
         this.recolter();
     }
-
 
     public String toString() {
         return "Paille";

@@ -1,49 +1,61 @@
 import java.util.ArrayList;
 
-/**
- * Classe gérant la simulation, le terrain et les interactions entre agents.
- */
 public class Simulation {
-    private Terrain terrain; // 
-    private ArrayList<Agent> agents; // 
+    private Terrain terrain; 
+    private ArrayList<Agent> agents; 
     private boolean onePieceTrouve = false;
-
+    
+    // Statistiques 
+    private int nbFruits = 0;
+    private int nbCombatsTotal = 0; 
+    private int etapeCourante = 0;  
 
     public Simulation(int nbLignes, int nbColonnes) {
-        // Le terrain est représenté par un tableau à 2 dimensions 
+        // Le terrain est un tableau à 2 dimensions 
         this.terrain = new Terrain(nbLignes, nbColonnes);
         this.agents = new ArrayList<>();
         this.initialiser();
     }
 
-    /**
-     * Initialisation du terrain avec des ressources et des agents 
-     */
+    // Initialisation du terrain avec des ressources et des agents 
+     
     private void initialiser() {
         // Ajout des combattants (Equipages et Unités Marine)
-        // On les place au même endroit pour tester le combat immédiatement
+        // On les place au même endroit pour les faire combattre au début
         agents.add(new ChapeauxDePaille(1, 1, terrain));
         agents.add(new MarineN55(1, 1, terrain)); 
         
-        // Ajout des deux types de ressources obligatoires 
-        // 1. Ressource évolutive (Fruit du Démon) 
+        // Ajout des Ressources 
+        // Ressource évolutive 
         terrain.setCase(2, 2, new FruitDuDemon());
-        // 2. Ressource stable (One Piece / Trésor) 
+        // 2. Ressource stable
         terrain.setCase(4, 1, new OnePiece(500));
     }
 
-    /**
-     * Gère les duels lorsque deux agents se rencontrent sur la même case 
-     */
+
+
+    //  Méthodes d'organisation 
+    private void detecterEtGererCombats() {
+        for (int i = 0; i < agents.size(); i++) {
+            for (int j = i + 1; j < agents.size(); j++) {
+                Agent a1 = agents.get(i);
+                Agent a2 = agents.get(j);
+                if (a1.getLigne() == a2.getLigne() && a1.getColonne() == a2.getColonne()) {
+                    this.nbCombatsTotal++; // Statistique
+                    gererCombat(a1, a2);
+                }
+            }
+        }
+    }
+
     public void gererCombat(Agent a1, Agent a2) {
-        // Utilisation de l'interface Combattant 
+        // Utilisation de l'interface Combattant
         if (a1 instanceof Combattant && a2 instanceof Combattant) {
             System.out.println("\n COMBAT en (" + a1.getLigne() + "," + a1.getColonne() + ")"); 
             
             if (Math.random() > 0.5) {
                 System.out.print(" Vainqueur : ");
-                ((Combattant)a1).crierVictoire();
-                // Le perdant est expulsé vers une position aléatoire 
+                ((Combattant)a1).crierVictoire(); // Utilisation interface
                 a2.seDeplacer((int)(Math.random()*5)+1, (int)(Math.random()*5)+1); 
             } else {
                 System.out.print(" Vainqueur : ");
@@ -52,61 +64,47 @@ public class Simulation {
             }
         }
     }
-    
-    public boolean isOnePieceTrouve() {
-        return onePieceTrouve;
-    }
-    /**
-     * Réalise une étape complète de la simulation 
-     */
-    public void etape() {
-    // 1. Actions des agents 
-        for (Agent a : agents) {
-            a.action();
-        }
 
-    // 2. Combats
-        for (int i = 0; i < agents.size(); i++) {
-            for (int j = i + 1; j < agents.size(); j++) {
-                Agent a1 = agents.get(i);
-                Agent a2 = agents.get(j);
-                if (a1.getLigne() == a2.getLigne() && a1.getColonne() == a2.getColonne()) {
-                    gererCombat(a1, a2);
-                }
-            }
-        }
-
-    // 3. Évolution des ressources 
+    private void faireEvoluerRessources() {
+        int count = 0;
         for (Ressource r : terrain.lesRessources()) {
             if (r instanceof FruitDuDemon) {
-                ((FruitDuDemon) r).murer();
+                ((FruitDuDemon) r).murer(); // Appel de la méthode d'évolution
+                count++;
             }
         }
+        this.nbFruits = count; // Mise à jour stat
+    }
 
-    // 4. Vérification One Piece 
+    private void genererNouveauFruit() {
+        if (Math.random() < 0.20) { // 20% de chance par tour
+            int l = (int)(Math.random() * 5) + 1;
+            int c = (int)(Math.random() * 5) + 1;
+            if (terrain.getCase(l, c) == null) {
+                terrain.setCase(l, c, new FruitDuDemon());
+                System.out.println(" Un nouveau Fruit du Démon est apparu en (" + l + "," + c + ")");
+            }
+        }
+    }
+
+    private void verifierOnePiece() {
         boolean encorePresent = false;
         for (Ressource r : terrain.lesRessources()) {
             if (r instanceof OnePiece) encorePresent = true;
         }
         if (!encorePresent) onePieceTrouve = true;
+    }
 
-        if (Math.random() < 0.20) { // 20% de chance par tour
-            int l = (int)(Math.random() * 5) + 1;
-            int c = (int)(Math.random() * 5) + 1;
-            
-            // On vérifie que la case est vide avant de planter
-            if (terrain.getCase(l, c) == null) {
-                terrain.setCase(l, c, new FruitDuDemon());
-                System.out.println(" Un nouveau Fruit du Démon vient de pousser en (" + l + "," + c + ")");
-            }
-        }
+    //  Affichages 
+    public void afficherStats() {
+        System.out.println("\n======= STATISTIQUES =======");
+        System.out.println("Tour n° : " + etapeCourante);
+        System.out.println("Combats enregistrés : " + nbCombatsTotal);
+        System.out.println("Fruits présents : " + nbFruits);
+        System.out.println("One Piece trouvé : " + (onePieceTrouve ? "OUI" : "NON"));
+        System.out.println("============================");
+    }
 
-    // 5. Affichage 
-        this.afficherSimulation();
-}
-    /**
-     * Affiche l'état du terrain et la position des agents sous forme de grille 
-     */
     public void afficherSimulation() {
         String separation = ":----------:----------:----------:----------:----------:";
         System.out.println(separation);
@@ -125,7 +123,7 @@ public class Simulation {
                 if (agentIci != null) {
                     String label = (agentIci instanceof EquipagePirate) ? "P:" : "M:";
                     String nomAgent = agentIci.toString();
-                    String nomCourt = nomAgent.substring(0, Math.min(nomAgent.length(), 6)); // 6 au lieu de 5
+                    String nomCourt = nomAgent.substring(0, Math.min(nomAgent.length(), 6));
                     System.out.print(String.format(" %-8s |", label + nomCourt));
                 } else {
                     Ressource r = terrain.getCase(l, c);
@@ -139,5 +137,35 @@ public class Simulation {
             }
             System.out.println("\n" + separation);
         }
+    }
+
+    //  Réalise une étape complète de la simulation 
+    public void etape() {
+        this.etapeCourante++; 
+
+        // Actions des agents 
+        for (Agent a : agents) {
+            a.action();
+        }
+
+        // Gestion des combats
+        this.detecterEtGererCombats();
+
+        // Évolution des ressources existantes
+        this.faireEvoluerRessources();
+
+        // Génération de nouveaux fruits (20% de chance)
+        this.genererNouveauFruit();
+
+        // Mise à jour de l'état du One Piece
+        this.verifierOnePiece();
+
+        // Affichage complet
+        this.afficherSimulation();
+        this.afficherStats();
+    }
+
+    public boolean isOnePieceTrouve() { 
+        return onePieceTrouve; 
     }
 }
