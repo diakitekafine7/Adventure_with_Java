@@ -6,8 +6,8 @@ public class MarineN55 extends UnitéMarine{
 
     public void action() {
         //  déplacement aléatoire pour la simulation 
-        int nouvelleLig = (int)(Math.random() * 10); 
-        int nouvelleCol = (int)(Math.random() * 10);
+        int nouvelleLig = (int)(Math.random() * t.nbLignes) + 1;
+        int nouvelleCol = (int)(Math.random() * t.nbColonnes) + 1;
         
         this.seDeplacer(nouvelleLig, nouvelleCol);
         

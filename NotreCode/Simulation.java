@@ -6,6 +6,8 @@ import java.util.ArrayList;
 public class Simulation {
     private Terrain terrain; // 
     private ArrayList<Agent> agents; // 
+    private boolean onePieceTrouve = false;
+
 
     public Simulation(int nbLignes, int nbColonnes) {
         // Le terrain est représenté par un tableau à 2 dimensions 
@@ -51,16 +53,19 @@ public class Simulation {
         }
     }
     
+    public boolean isOnePieceTrouve() {
+        return onePieceTrouve;
+    }
     /**
      * Réalise une étape complète de la simulation 
      */
     public void etape() {
-        // 1. Chaque agent réalise une action (déplacement/récolte) 
+    // 1. Actions des agents 
         for (Agent a : agents) {
             a.action();
-        } 
-    
-        // 2. Détection des rencontres et déclenchement des combats
+        }
+
+    // 2. Combats
         for (int i = 0; i < agents.size(); i++) {
             for (int j = i + 1; j < agents.size(); j++) {
                 Agent a1 = agents.get(i);
@@ -70,28 +75,33 @@ public class Simulation {
                 }
             }
         }
-    
-        // 3. Mise à jour automatique des ressources évolutives 
-        ArrayList<Ressource> res = terrain.lesRessources();
-        for (Ressource r : res) {
+
+    // 3. Évolution des ressources 
+        for (Ressource r : terrain.lesRessources()) {
             if (r instanceof FruitDuDemon) {
                 ((FruitDuDemon) r).murer();
             }
         }
 
-        // 4. Affichage des informations sur l'étape 
-        this.afficherSimulation(); 
-    }
+    // 4. Vérification One Piece 
+        boolean encorePresent = false;
+        for (Ressource r : terrain.lesRessources()) {
+            if (r instanceof OnePiece) encorePresent = true;
+        }
+        if (!encorePresent) onePieceTrouve = true;
 
+    // 5. Affichage 
+        this.afficherSimulation();
+}
     /**
      * Affiche l'état du terrain et la position des agents sous forme de grille 
      */
     public void afficherSimulation() {
-        String separation = ":-------:-------:-------:-------:-------:";
+        String separation = ":----------:----------:----------:----------:----------:";
         System.out.println(separation);
-    
+
         for (int l = 1; l <= 5; l++) {
-            System.out.print("|"); 
+            System.out.print("|");
             for (int c = 1; c <= 5; c++) {
                 Agent agentIci = null;
                 for (Agent a : agents) {
@@ -100,20 +110,19 @@ public class Simulation {
                         break;
                     }
                 }
-    
+
                 if (agentIci != null) {
-                    // Identification visuelle des types d'agents
                     String label = (agentIci instanceof EquipagePirate) ? "P:" : "M:";
                     String nomAgent = agentIci.toString();
-                    String nomCourt = nomAgent.substring(0, Math.min(nomAgent.length(), 5));
-                    System.out.print(String.format(" %-5s |", label + nomCourt));
+                    String nomCourt = nomAgent.substring(0, Math.min(nomAgent.length(), 6)); // 6 au lieu de 5
+                    System.out.print(String.format(" %-8s |", label + nomCourt));
                 } else {
-                    Ressource r = terrain.getCase(l, c); // 
+                    Ressource r = terrain.getCase(l, c);
                     if (r != null) {
                         String type = (r instanceof FruitDuDemon) ? "Fruit" : "Piece";
-                        System.out.print(String.format(" %-5s |", type));
+                        System.out.print(String.format(" %-8s |", type));
                     } else {
-                        System.out.print("       |"); 
+                        System.out.print("          |");
                     }
                 }
             }
