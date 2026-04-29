@@ -44,21 +44,46 @@ public class Simulation {
             }
         }
     }
-
+    
     public void gererCombat(Agent a1, Agent a2) {
-        // Utilisation de l'interface Combattant
         if (a1 instanceof Combattant && a2 instanceof Combattant) {
             System.out.println("\n COMBAT en (" + a1.getLigne() + "," + a1.getColonne() + ")"); 
             
+            Agent vainqueur;
+            Agent perdant;
+    
+            // Détermination du gagnant
             if (Math.random() > 0.5) {
-                System.out.print(" Vainqueur : ");
-                ((Combattant)a1).crierVictoire(); // Utilisation interface
-                a2.seDeplacer((int)(Math.random()*5)+1, (int)(Math.random()*5)+1); 
+                vainqueur = a1;
+                perdant = a2;
             } else {
-                System.out.print(" Vainqueur : ");
-                ((Combattant)a2).crierVictoire();
-                a1.seDeplacer((int)(Math.random()*5)+1, (int)(Math.random()*5)+1); 
+                vainqueur = a2;
+                perdant = a1;
             }
+    
+            // Le vainqueur crie victoire
+            ((Combattant)vainqueur).crierVictoire();
+    
+            // Si le perdant est notre équipage de pirates, perte de Fruit
+            if (perdant instanceof EquipagePirate) {
+                EquipagePirate pirate = (EquipagePirate) perdant;
+                
+                // Les fruits sont perdus et on les copies 
+                for (FruitDuDemon f : pirate.getFruitsManges()) {
+                    // Utilisation du constructeur de copie pour recréer le fruit au sol
+                    FruitDuDemon fruitTombe = new FruitDuDemon(f);
+                    
+                    // On remet le fruit sur le terrain (sur la case actuelle du combat)
+                    this.terrain.setCase(perdant.getLigne(), perdant.getColonne(), fruitTombe);
+                    System.out.println(" ! Un fruit est tombé au sol pendant la fuite !");
+                }
+                
+                // On vide le sac du pirate puisqu'il a tout perdu
+                pirate.getFruitsManges().clear();
+            }
+    
+            // Le perdant s'enfuit 
+            perdant.seDeplacer((int)(Math.random()*5)+1, (int)(Math.random()*5)+1); 
         }
     }
 
