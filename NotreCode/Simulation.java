@@ -18,12 +18,10 @@ public class Simulation {
     }
 
     // Initialisation du terrain avec des ressources et des agents 
-     
     private void initialiser() {
         // Ajout des combattants (Equipages et Unités Marine)
-        // On les place au même endroit pour les faire combattre au début
         agents.add(new ChapeauxDePaille(1, 1, terrain));
-        agents.add(new MarineN55(1, 1, terrain)); 
+        agents.add(new MarineN55(1, 2, terrain)); 
         
         // Ajout des Ressources 
         // Ressource évolutive 
@@ -31,7 +29,6 @@ public class Simulation {
         // 2. Ressource stable
         terrain.setCase(4, 1, new OnePiece(500));
     }
-
 
 
     //  Méthodes d'organisation 
@@ -102,8 +99,8 @@ public class Simulation {
         System.out.println("Combats enregistrés : " + nbCombatsTotal);
         System.out.println("Fruits présents : " + nbFruits);
         System.out.println("One Piece trouvé : " + (onePieceTrouve ? "OUI" : "NON"));
-        System.out.println("============================");
-    }
+        System.out.println("============================\n");
+    } 
 
     public void afficherSimulation() {
         String separation = ":----------:----------:----------:----------:----------:";
