@@ -38,15 +38,15 @@ public class Simulation {
     public void gererCombat(Agent a1, Agent a2) {
         // Utilisation de l'interface Combattant 
         if (a1 instanceof Combattant && a2 instanceof Combattant) {
-            System.out.println("\n[COMBAT] Rencontre en (" + a1.getLigne() + "," + a1.getColonne() + ")"); 
+            System.out.println("\n COMBAT en (" + a1.getLigne() + "," + a1.getColonne() + ")"); 
             
             if (Math.random() > 0.5) {
-                System.out.print("[LOG] Vainqueur : ");
+                System.out.print(" Vainqueur : ");
                 ((Combattant)a1).crierVictoire();
                 // Le perdant est expulsé vers une position aléatoire 
                 a2.seDeplacer((int)(Math.random()*5)+1, (int)(Math.random()*5)+1); 
             } else {
-                System.out.print("[LOG] Vainqueur : ");
+                System.out.print(" Vainqueur : ");
                 ((Combattant)a2).crierVictoire();
                 a1.seDeplacer((int)(Math.random()*5)+1, (int)(Math.random()*5)+1); 
             }
@@ -90,6 +90,17 @@ public class Simulation {
         }
         if (!encorePresent) onePieceTrouve = true;
 
+        if (Math.random() < 0.20) { // 20% de chance par tour
+            int l = (int)(Math.random() * 5) + 1;
+            int c = (int)(Math.random() * 5) + 1;
+            
+            // On vérifie que la case est vide avant de planter
+            if (terrain.getCase(l, c) == null) {
+                terrain.setCase(l, c, new FruitDuDemon());
+                System.out.println(" Un nouveau Fruit du Démon vient de pousser en (" + l + "," + c + ")");
+            }
+        }
+
     // 5. Affichage 
         this.afficherSimulation();
 }
@@ -119,7 +130,7 @@ public class Simulation {
                 } else {
                     Ressource r = terrain.getCase(l, c);
                     if (r != null) {
-                        String type = (r instanceof FruitDuDemon) ? "Fruit" : "Piece";
+                        String type = (r instanceof FruitDuDemon) ? "Fruit" : "OnePiece";
                         System.out.print(String.format(" %-8s |", type));
                     } else {
                         System.out.print("          |");
