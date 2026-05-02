@@ -5,19 +5,13 @@ public class MarineN55 extends UniteMarine{
     }
 
     public void action() {
-
-        // On calcule un petit décalage (-1, 0 ou 1)
-        int deltaLig = (int)(Math.random() * 3) - 1; 
-        int deltaCol = (int)(Math.random() * 3) - 1;
+        // Patrouille aléatoire grâce à Config
+        int nL = Config.deplacementAgent(this.getLigne(), Config.NB_LIGNES);
+        int nC = Config.deplacementAgent(this.getColonne(), Config.NB_COLONNES);
+        
     
-        int nL = this.getLigne() + deltaLig;
-        int nC = this.getColonne() + deltaCol;
-    
-        // On vérifie qu'on ne sort pas du terrain (1 à 5)
-        if (nL >= 1 && nL <= 5 && nC >= 1 && nC <= 5) {
-            this.seDeplacer(nL, nC);
-            System.out.println(nom + " (" + grade + ") patrouille en " + nL + "," + nC);
-        }
+        this.seDeplacer(nL, nC);
+        System.out.println(nom + " (" + grade + ") patrouille en " + nL + "," + nC);
     }
 
     public String toString() {

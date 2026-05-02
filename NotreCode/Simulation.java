@@ -16,6 +16,9 @@ public class Simulation {
         this.terrain = new Terrain(nbLignes, nbColonnes);
         this.agents = new ArrayList<>();
         this.initialiser();
+        
+        // Initialisation des stats pour l'étape 0
+        this.faireEvoluerRessources(); 
     }
 
     //Methode pour avoir l'instance 
@@ -38,7 +41,7 @@ public class Simulation {
         if (ok1 == false) {
             throw new SimulationException("Impossible de placer le Fruit du Démon en (2,2) !");
         }
-        // 2. Ressource stable
+        // Ressource stable
         boolean ok2 = terrain.setCase(4, 1, new OnePiece(500));
         if (ok2 == false) {
             throw new SimulationException("Impossible de placer le One Piece en (4,1) !");
@@ -97,8 +100,8 @@ public class Simulation {
                 pirate.getFruitsManges().clear();
             }
     
-            // Le perdant s'enfuit 
-            perdant.seDeplacer((int)(Math.random()*5)+1, (int)(Math.random()*5)+1); 
+            // Le perdant s'enfuit en utilisant la classe statique Config
+            perdant.seDeplacer(Config.genererPositionAleatoire(), Config.genererPositionAleatoire()); 
         }
     }
 
@@ -114,12 +117,15 @@ public class Simulation {
     }
 
     private void genererNouveauFruit() {
-        if (Math.random() < 0.20) { // 20% de chance par tour
-            int l = (int)(Math.random() * 5) + 1;
-            int c = (int)(Math.random() * 5) + 1;
+        // Utilisation de la méthode statique de Config pour tester la chance
+        if (Config.testerChance(Config.CHANCE_APPARITION_FRUIT)) { 
+            // Utilisation de la méthode statique de Config pour les positions
+            int l = Config.genererPositionAleatoire();
+            int c = Config.genererPositionAleatoire();
+            
             if (terrain.getCase(l, c) == null) {
                 terrain.setCase(l, c, new FruitDuDemon());
-                System.out.println(" Un nouveau Fruit du Démon est apparu en (" + l + "," + c + ")");
+                System.out.println("Un nouveau Fruit du Démon est apparu en (" + l + "," + c + ")");
             }
         }
     }
@@ -188,11 +194,11 @@ public class Simulation {
         // Gestion des combats
         this.detecterEtGererCombats();
 
-        // Évolution des ressources existantes
-        this.faireEvoluerRessources();
-
-        // Génération de nouveaux fruits (20% de chance)
+        // Génération de nouveaux fruits AVANT de compter (pour les stats temps réel)
         this.genererNouveauFruit();
+
+        // Évolution et comptage des ressources
+        this.faireEvoluerRessources();
 
         // Mise à jour de l'état du One Piece
         this.verifierOnePiece();

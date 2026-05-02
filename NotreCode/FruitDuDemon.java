@@ -2,7 +2,7 @@ public class FruitDuDemon extends Ressource {
 
     public FruitDuDemon() {
         // Appelle Ressource(String type, int quantite)
-        super("Fruit", 10); 
+        super("Fruit", Config.QUANTITE_INITIALE_FRUIT); 
     }
 
     // Constructeur de copie
