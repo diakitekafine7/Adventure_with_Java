@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 public class Simulation {
     private Terrain terrain; 
+    private static Simulation instance = null;
     private ArrayList<Agent> agents; 
     private boolean onePieceTrouve = false;
     
@@ -10,24 +11,38 @@ public class Simulation {
     private int nbCombatsTotal = 0; 
     private int etapeCourante = 0;  
 
-    public Simulation(int nbLignes, int nbColonnes) {
+    private Simulation(int nbLignes, int nbColonnes) throws SimulationException {
         // Le terrain est un tableau à 2 dimensions 
         this.terrain = new Terrain(nbLignes, nbColonnes);
         this.agents = new ArrayList<>();
         this.initialiser();
     }
 
+    //Methode pour avoir l'instance 
+    public static Simulation getInstance(int nbLignes, int nbColonnes) throws SimulationException {
+        if (instance == null) {
+            instance = new Simulation(nbLignes, nbColonnes);
+        }
+        return instance;
+    }
+
     // Initialisation du terrain avec des ressources et des agents 
-    private void initialiser() {
+    private void initialiser() throws SimulationException  {
         // Ajout des combattants (Equipages et Unités Marine)
         agents.add(new ChapeauxDePaille(1, 1, terrain));
         agents.add(new MarineN55(1, 2, terrain)); 
         
         // Ajout des Ressources 
         // Ressource évolutive 
-        terrain.setCase(2, 2, new FruitDuDemon());
+        boolean ok1 = terrain.setCase(2, 2, new FruitDuDemon());
+        if (ok1 == false) {
+            throw new SimulationException("Impossible de placer le Fruit du Démon en (2,2) !");
+        }
         // 2. Ressource stable
-        terrain.setCase(4, 1, new OnePiece(500));
+        boolean ok2 = terrain.setCase(4, 1, new OnePiece(500));
+        if (ok2 == false) {
+            throw new SimulationException("Impossible de placer le One Piece en (4,1) !");
+        }
     }
 
 

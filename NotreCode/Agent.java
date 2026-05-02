@@ -18,7 +18,7 @@ public abstract class Agent {
         this.col = col;
     }
 
-    public abstract void action(); // Méthode abstraite pour la checklist [cite: 117]
+    public abstract void action(); // Méthode abstraite pour la checklist 
     
     public int getLigne() {
         return this.lig;
