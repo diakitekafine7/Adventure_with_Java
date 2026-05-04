@@ -153,7 +153,7 @@ public class Simulation {
                 } else {
                     Ressource r = terrain.getCase(l, c);
                     if (r != null) {
-                        String type = (r instanceof FruitDuDemon) ? "Fruit" : "OnePce";
+                        String type = (r instanceof FruitDuDemon) ? "Fruit" : "OnePiece";
                         System.out.print(String.format(" %-8s |", type));
                     } else {
                         System.out.print("          |");

@@ -17,7 +17,7 @@ public class ChapeauxDePaille extends EquipagePirate{
     }
 
     public String toString() {
-        return "Paille";
+        return "ChapP";
     }
     
 }

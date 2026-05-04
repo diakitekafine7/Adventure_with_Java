@@ -9,12 +9,13 @@ public class MarineN55 extends UniteMarine{
         int nL = Config.deplacementAgent(this.getLigne(), Config.NB_LIGNES);
         int nC = Config.deplacementAgent(this.getColonne(), Config.NB_COLONNES);
         
-    
-        this.seDeplacer(nL, nC);
-        System.out.println(nom + " (" + grade + ") patrouille en " + nL + "," + nC);
+        if (t.sontValides(nL, nC)) {
+            this.seDeplacer(nL, nC);
+            System.out.println(nom + " patrouille en " + nL + "," + nC);
+        }
     }
 
     public String toString() {
-        return "Marine: " + nom + " [" + grade + "] en (" + lig + "," + col + ")";
+        return "MN55"; 
     }
 }
