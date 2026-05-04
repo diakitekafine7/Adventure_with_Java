@@ -11,9 +11,9 @@ public class Simulation {
     private int nbCombatsTotal = 0; 
     private int etapeCourante = 0;  
 
-    private Simulation(int nbLignes, int nbColonnes) throws SimulationException {
+    private Simulation() throws SimulationException {
         // Le terrain est un tableau à 2 dimensions 
-        this.terrain = new Terrain(nbLignes, nbColonnes);
+        this.terrain = new Terrain(Config.NB_LIGNES, Config.NB_COLONNES);
         this.agents = new ArrayList<>();
         this.initialiser();
         
@@ -22,9 +22,9 @@ public class Simulation {
     }
 
     //Methode pour avoir l'instance 
-    public static Simulation getInstance(int nbLignes, int nbColonnes) throws SimulationException {
+    public static Simulation getInstance() throws SimulationException {
         if (instance == null) {
-            instance = new Simulation(nbLignes, nbColonnes);
+            instance = new Simulation();
         }
         return instance;
     }
@@ -62,14 +62,14 @@ public class Simulation {
             }
         }
     }
-    
+
     public void gererCombat(Agent a1, Agent a2) {
         if (a1 instanceof Combattant && a2 instanceof Combattant) {
             System.out.println("\n COMBAT en (" + a1.getLigne() + "," + a1.getColonne() + ")"); 
             
             Agent vainqueur;
             Agent perdant;
-    
+
             // Détermination du gagnant
             if (Math.random() > 0.5) {
                 vainqueur = a1;
@@ -78,10 +78,10 @@ public class Simulation {
                 vainqueur = a2;
                 perdant = a1;
             }
-    
+
             // Le vainqueur crie victoire
             ((Combattant)vainqueur).crierVictoire();
-    
+
             // Si le perdant est notre équipage de pirates, perte de Fruit
             if (perdant instanceof EquipagePirate) {
                 EquipagePirate pirate = (EquipagePirate) perdant;
@@ -99,7 +99,7 @@ public class Simulation {
                 // On vide le sac du pirate puisqu'il a tout perdu
                 pirate.getFruitsManges().clear();
             }
-    
+
             // Le perdant s'enfuit en utilisant la classe statique Config
             perdant.seDeplacer(Config.genererPositionAleatoire(), Config.genererPositionAleatoire()); 
         }
@@ -107,10 +107,13 @@ public class Simulation {
 
     private void faireEvoluerRessources() {
         int count = 0;
-        for (Ressource r : terrain.lesRessources()) {
-            if (r instanceof FruitDuDemon) {
-                ((FruitDuDemon) r).murer(); // Appel de la méthode d'évolution
-                count++;
+        for (int l = 1; l <= Config.NB_LIGNES; l++) {
+            for (int c = 1; c <= Config.NB_COLONNES; c++) {
+                Ressource r = terrain.getCase(l, c);
+                if (r instanceof FruitDuDemon) {
+                    ((FruitDuDemon) r).murer(); // Appel de la méthode d'évolution
+                    count++;
+                }
             }
         }
         this.nbFruits = count; // Mise à jour stat
@@ -123,7 +126,7 @@ public class Simulation {
             int l = Config.genererPositionAleatoire();
             int c = Config.genererPositionAleatoire();
             
-            if (terrain.getCase(l, c) == null) {
+            if (terrain.caseEstVide(l, c)) {
                 terrain.setCase(l, c, new FruitDuDemon());
                 System.out.println("Un nouveau Fruit du Démon est apparu en (" + l + "," + c + ")");
             }
@@ -152,9 +155,9 @@ public class Simulation {
         String separation = ":----------:----------:----------:----------:----------:";
         System.out.println(separation);
 
-        for (int l = 1; l <= 5; l++) {
+        for (int l = 1; l <= Config.NB_LIGNES; l++) {
             System.out.print("|");
-            for (int c = 1; c <= 5; c++) {
+            for (int c = 1; c <= Config.NB_COLONNES; c++) {
                 Agent agentIci = null;
                 for (Agent a : agents) {
                     if (a.getLigne() == l && a.getColonne() == c) {

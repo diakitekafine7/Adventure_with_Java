@@ -1,7 +1,7 @@
 public class TestSimulation {
     public static void main(String[] args) {
         try {
-            Simulation sim = Simulation.getInstance(5, 5);
+            Simulation sim = Simulation.getInstance();
             System.out.println("--- ÉTAT INITIAL (Étape 0) ---");
             sim.afficherSimulation(); 
             sim.afficherStats();
