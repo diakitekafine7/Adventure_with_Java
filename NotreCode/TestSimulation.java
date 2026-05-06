@@ -15,7 +15,7 @@ public class TestSimulation {
             }
 
             if (sim.isOnePieceTrouve() == true) {
-                System.out.println("LE ONE PIECE A ÉTÉ TROUVÉ ! JE SERAI ROI DES PIRATES !");
+                System.out.println("LE ONE PIECE A ÉTÉ TROUVÉ !");
             }
 
         } catch (SimulationException e) {

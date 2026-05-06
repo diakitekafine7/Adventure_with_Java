@@ -11,10 +11,18 @@ public abstract class EquipagePirate extends Agent implements Combattant{
 
     public void recolter() {
         Ressource r = t.getCase(lig, col);
+    
         if (r instanceof FruitDuDemon) {
-            fruitsManges.add(new FruitDuDemon((FruitDuDemon)r));
-            System.out.println(nom + " récolte " + r.toString());
-            t.viderCase(lig, col); // Action sur le terrain
+            this.fruitsManges.add(new FruitDuDemon((FruitDuDemon)r));
+            t.viderCase(lig, col); // Le fruit est ramassé
+            System.out.println(nom + " a mangé un Fruit du Démon !");
+        } 
+        else if (r instanceof OnePiece) {
+            // Le cri de victoire se fait au moment de la récolte physique
+            System.out.println("!!!! " + nom + " : J'AI TROUVÉ LE ONE PIECE ! !!!!");
+            System.out.println("JE SERAI LE ROI DES PIRATES !");
+            
+            t.viderCase(lig, col); // On retire le One Piece du terrain
         }
     }
     
