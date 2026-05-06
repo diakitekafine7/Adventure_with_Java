@@ -1,3 +1,3 @@
 public interface Combattant{
-    void crierVictoire();
+    public void crierVictoire();
 }
